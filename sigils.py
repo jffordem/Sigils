@@ -19,9 +19,10 @@ Example:
     sigils.py 4 7 I I T T Z S L
 """
 
+
 class Sigil:
     def __init__(self, *patterns):
-        self.shapes = [ Sigil.pointsFromPattern(pattern) for pattern in patterns ]
+        self.shapes = [Sigil.pointsFromPattern(pattern) for pattern in patterns]
 
     def __iter__(self):
         return self.shapes.__iter__()
@@ -37,6 +38,7 @@ class Sigil:
                 if ch == '*':
                     result.add((row, col))
         return result
+
 
 SIGIL_I = Sigil(
     "****",
@@ -82,6 +84,7 @@ SIGILS = {
     'Z': SIGIL_Z
 }
 
+
 class Board:
     def __init__(self, array):
         self.__array = array
@@ -111,14 +114,20 @@ class Board:
     def islands(self):
         def adjacent(island, hole):
             row, col = hole
-            return len(island.intersection({ (row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1) })) > 0
+            neighbors = {
+                (row - 1, col),
+                (row + 1, col),
+                (row, col - 1),
+                (row, col + 1)
+            }
+            return len(island.intersection(neighbors)) > 0
         rows, cols = self.size()
-        holes = [ (row, col) for row in range(rows) for col in range(cols) if self.__array[row, col] == '.' ]
+        holes = [(row, col) for row in range(rows) for col in range(cols) if self.__array[row, col] == '.']
         islands = list()
         for hole in holes:
-            neighbors = [ index for index, island in enumerate(islands) if adjacent(island, hole) ]
+            neighbors = [index for index, island in enumerate(islands) if adjacent(island, hole)]
             if len(neighbors) == 0:
-                islands.append({ hole })
+                islands.append({hole})
             elif len(neighbors) == 1:
                 islands[neighbors[0]].add(hole)
             else:
@@ -126,26 +135,12 @@ class Board:
                 for i in neighbors:
                     island.update(islands[i])
                     island.add(hole)
-                islands = [ island for index, island in enumerate(islands) if index not in neighbors ]
+                islands = [island for index, island in enumerate(islands) if index not in neighbors]
                 islands.append(island)
         return islands
 
-#def matchShape(islands, pieces):
-#    def matchPiece(island, shape):
-#        left = min(col for _, col in island)
-#        top = min(row for row, _ in island)
-#        island = { (row - top, col - left) for row, col in island }
-#        return len(island.intersection(shape)) == 4
-#    for island in islands:
-#        if len(island) == 4:
-#            for piece in pieces:
-#                for shape in piece:
-#                    if matchPiece(island, shape):
-#                        return True
-#            return False
-#   return True
 
-def solve(board, pieces, timeout = 60, ch = ord('A'), meta = { "count": 0, "bad": 0, "missing": 0, "start": time.time() }):
+def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "missing": 0, "start": time.time()}):
     islands = board.islands()
     if len(pieces) == 0 and len(islands) == 0:
         return board
@@ -162,9 +157,6 @@ def solve(board, pieces, timeout = 60, ch = ord('A'), meta = { "count": 0, "bad"
     elif any(len(island) % 4 != 0 for island in islands):
         meta["bad"] += 1
         return None
-    #elif not matchShape(islands, pieces):
-    #    meta["missing"] += 1
-    #    return None
     else:
         rows, cols = board.size()
         piece, remaining = pieces[0], pieces[1:]
@@ -181,8 +173,9 @@ def solve(board, pieces, timeout = 60, ch = ord('A'), meta = { "count": 0, "bad"
                             return solved
         return None
 
+
 if __name__ == "__main__":
-    pieces = [ ]
+    pieces = list()
     if len(sys.argv) > 3:
         rows = int(sys.argv[1])
         cols = int(sys.argv[2])
