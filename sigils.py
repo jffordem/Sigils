@@ -179,17 +179,17 @@ if __name__ == "__main__":
     if len(sys.argv) > 3:
         rows = int(sys.argv[1])
         cols = int(sys.argv[2])
-        for i in sys.argv[3:]:
-            ch = str(i).upper()
-            if ch in SIGILS:
-                pieces.append(SIGILS[ch])
-            elif ch == 'R':
-                ch = random.choice(list(SIGILS.keys()))
-                print("Selected random piece", ch)
-                pieces.append(SIGILS[ch])
-            else:
-                print("Error: unknown piece", ch)
-                exit()
+        for s in sys.argv[3:]:
+            for ch in s.upper():
+                if ch in SIGILS:
+                    pieces.append(SIGILS[ch])
+                elif ch == 'R':
+                    ch = random.choice(list(SIGILS.keys()))
+                    print("Selected random piece", ch)
+                    pieces.append(SIGILS[ch])
+                else:
+                    print("Error: unknown piece", ch)
+                    exit()
         board = Board(Board.empty(rows, cols))
         if len(pieces) * 4 != rows * cols:
             print("Wrong number of pieces.")
