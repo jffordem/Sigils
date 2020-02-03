@@ -130,20 +130,20 @@ class Board:
                 islands.append(island)
         return islands
 
-def matchShape(islands, pieces):
-    def matchPiece(island, shape):
-        left = min(col for _, col in island)
-        top = min(row for row, _ in island)
-        island = { (row - top, col - left) for row, col in island }
-        return len(island.intersection(shape)) == 4
-    for island in islands:
-        if len(island) == 4:
-            for piece in pieces:
-                for shape in piece:
-                    if matchPiece(island, shape):
-                        return True
-            return False
-    return True
+#def matchShape(islands, pieces):
+#    def matchPiece(island, shape):
+#        left = min(col for _, col in island)
+#        top = min(row for row, _ in island)
+#        island = { (row - top, col - left) for row, col in island }
+#        return len(island.intersection(shape)) == 4
+#    for island in islands:
+#        if len(island) == 4:
+#            for piece in pieces:
+#                for shape in piece:
+#                    if matchPiece(island, shape):
+#                        return True
+#            return False
+#   return True
 
 def solve(board, pieces, timeout = 60, ch = ord('A'), meta = { "count": 0, "bad": 0, "missing": 0, "start": time.time() }):
     islands = board.islands()
@@ -162,9 +162,9 @@ def solve(board, pieces, timeout = 60, ch = ord('A'), meta = { "count": 0, "bad"
     elif any(len(island) % 4 != 0 for island in islands):
         meta["bad"] += 1
         return None
-    elif not matchShape(islands, pieces):
-        meta["missing"] += 1
-        return None
+    #elif not matchShape(islands, pieces):
+    #    meta["missing"] += 1
+    #    return None
     else:
         rows, cols = board.size()
         piece, remaining = pieces[0], pieces[1:]
