@@ -1,23 +1,9 @@
 # sigils.py
 
-import sys
 import random
 import numpy as np
 import time
-
-__doc__ = """
-Sigils
-
-Solves tetromino problems from games like Talos Principle.
-
-Usage:
-    sigils.py <rows> <cols> <sigils...>
-
-    Sigils are: I, O, T, J, L, S, Z
-
-Example:
-    sigils.py 4 7 I I T T Z S L
-"""
+import argparse
 
 
 class Sigil:
@@ -175,33 +161,34 @@ def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "m
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Solves tetromino puzzles from games like Talos Principle.")
+    parser.add_argument("rows", help="number of rows in the puzzle; example: 5", type=int)
+    parser.add_argument("cols", help="number of columns in the puzzle; example: 4", type=int)
+    parser.add_argument("pieces", help="pieces of the puzzle; sigils are I, O, T, J, L, S, Z; example: IOTLJ")
+    parser.add_argument("-t", "--timeout", help="seconds to spend solving puzzle; default: 60", type=int, default=60)
+    args = parser.parse_args()
+
     pieces = list()
-    if len(sys.argv) > 3:
-        rows = int(sys.argv[1])
-        cols = int(sys.argv[2])
-        for s in sys.argv[3:]:
-            for ch in s.upper():
-                if ch in SIGILS:
-                    pieces.append(SIGILS[ch])
-                elif ch == 'R':
-                    ch = random.choice(list(SIGILS.keys()))
-                    print("Selected random piece", ch)
-                    pieces.append(SIGILS[ch])
-                else:
-                    print("Error: unknown piece", ch)
-                    exit()
-        board = Board(Board.empty(rows, cols))
-        if len(pieces) * 4 != rows * cols:
-            print("Wrong number of pieces.")
+    for ch in args.pieces.upper():
+        if ch in SIGILS:
+            pieces.append(SIGILS[ch])
+        elif ch == 'R':
+            ch = random.choice(list(SIGILS.keys()))
+            print("Selected random piece", ch)
+            pieces.append(SIGILS[ch])
         else:
-            pieces = sorted(pieces, key=lambda piece: len(piece))
-            start = time.time()
-            solution = solve(board, pieces)
-            duration = time.time() - start
-            if duration > 2:
-                print("Solution:", int(duration), "seconds")
-            else:
-                print("Solution:", int(duration * 1000), "ms")
-            print(solution)
+            print("Error: unknown piece", ch)
+            exit()
+    board = Board(Board.empty(args.rows, args.cols))
+    if len(pieces) * 4 != args.rows * args.cols:
+        print("Wrong number of pieces.")
     else:
-        print(__doc__)
+        pieces = sorted(pieces, key=lambda piece: len(piece))
+        start = time.time()
+        solution = solve(board, pieces, timeout=args.timeout)
+        duration = time.time() - start
+        if duration > 2:
+            print("Solution:", int(duration), "seconds")
+        else:
+            print("Solution:", int(duration * 1000), "ms")
+        print(solution)
