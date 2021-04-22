@@ -183,7 +183,7 @@ def displayBoard(board):
         return colors[ch]
     if board is not None:
         rows, cols = board.size()
-        geo = str(cols * 40) + 'x' + str(rows * 40)
+        geo = str(cols * 40) + 'x' + str(rows * 40) + '+310+310'
         window = Tk()
         window.geometry(geo)
         window.title('Sigils')
