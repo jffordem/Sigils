@@ -4,7 +4,7 @@ import random
 import numpy as np
 import time
 import argparse
-from tkinter import *
+from tkinter import Tk, Label
 
 
 class Sigil:
@@ -95,6 +95,10 @@ class Board:
             copy[r + row, c + col] = ch
         return Board(copy)
 
+    def rows(self):
+        rows, _ = self.size()
+        return [ self.__array[row] for row in range(rows) ]
+
     def size(self):
         return self.__array.shape
 
@@ -126,6 +130,33 @@ class Board:
                 islands.append(island)
         return islands
 
+def findSolution(rows, cols, sigils, timeout=60):
+    pieces = list()
+    message = ''
+    for ch in sigils.upper():
+        if ch in SIGILS:
+            pieces.append(SIGILS[ch])
+        elif ch == 'R':
+            ch = random.choice(list(SIGILS.keys()))
+            message += 'Selected random piece ' + ch + '. '
+            pieces.append(SIGILS[ch])
+        elif ch == ' ':
+            pass
+        else:
+            return None, "Error: unknown piece " + ch
+    board = Board(Board.empty(rows, cols))
+    if len(pieces) * 4 != rows * cols:
+        return None, "Wrong number of pieces."
+    else:
+        pieces = sorted(pieces, key=lambda piece: len(piece))
+        start = time.time()
+        meta = {"count": 0, "bad": 0, "missing": 0, "start": start}
+        solution = solve(board, pieces, timeout=timeout, meta=meta)
+        duration = time.time() - start
+        if duration > 2:
+            return solution, message + "Duration: " + str(int(duration)) + " seconds"
+        else:
+            return solution, message + "Duration: " + str(int(duration * 1000)) + " ms"
 
 def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "missing": 0, "start": time.time()}):
     islands = board.islands()
@@ -206,32 +237,11 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--timeout", help="seconds to spend solving puzzle; default: 60", type=int, default=60)
     args = parser.parse_args()
 
-    pieces = list()
-    for ch in args.pieces.upper():
-        if ch in SIGILS:
-            pieces.append(SIGILS[ch])
-        elif ch == 'R':
-            ch = random.choice(list(SIGILS.keys()))
-            print("Selected random piece", ch)
-            pieces.append(SIGILS[ch])
-        else:
-            print("Error: unknown piece", ch)
-            exit()
-    board = Board(Board.empty(args.rows, args.cols))
-    if len(pieces) * 4 != args.rows * args.cols:
-        print("Wrong number of pieces.")
+    solution, message = findSolution(args.rows, args.cols, args.pieces)
+    print(message)
+    if solution is not None:
+        print("Displaying solution...")
+        #print(solution)
+        displayBoard(solution)
     else:
-        pieces = sorted(pieces, key=lambda piece: len(piece))
-        start = time.time()
-        solution = solve(board, pieces, timeout=args.timeout)
-        duration = time.time() - start
-        if duration > 2:
-            print("Duration:", int(duration), "seconds")
-        else:
-            print("Duration:", int(duration * 1000), "ms")
-        if solution is not None:
-            print("Displaying solution...")
-            #print(solution)
-            displayBoard(solution)
-        else:
-            print("No solution found.")
+        print("No solution found.")
