@@ -162,11 +162,11 @@ def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "m
 
 
 def displayBoard(board):
-    def getColor(ch):
-        colors = { 
-            'A': 'red', 
-            'B': 'green', 
-            'C': 'blue', 
+    def colorFromCh(ch):
+        colors = {
+            'A': 'red',
+            'B': 'green',
+            'C': 'blue',
             'D': 'pink',
             'E': 'purple',
             'F': 'thistle',
@@ -176,25 +176,30 @@ def displayBoard(board):
             'J': 'brown',
             'K': 'coral',
             'L': 'navy',
-            'M': 'orchid' 
+            'M': 'orchid'
         }
-        if ch not in colors: return 'dim gray'
+        if ch not in colors: 
+            return 'dim gray'
         return colors[ch]
     if board is not None:
         rows, cols = board.size()
-        geo = str(cols * 40) + 'x' + str(rows * 40)
+        geo = str(cols * 40) + 'x' + str(rows * 40) + '+310+310'
         window = Tk()
         window.geometry(geo)
         window.title('Sigils')
         s = str(board)
         for row, line in enumerate(s.split('\n')):
             for col, ch in enumerate(line):
-                label = Label(window, text=ch, font=("Arial Bold", 20), fg=getColor(ch))
+                label = Label(window, text=ch, font=("Arial Bold", 20), fg=colorFromCh(ch))
                 label.grid(column=col, row=row)
         window.mainloop()
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Solves tetromino puzzles from games like Talos Principle.", epilog="example: %(prog)s 5 4 TSJIT -t 5")
+    parser = argparse.ArgumentParser(
+        description="Solves tetromino puzzles from games like Talos Principle.", 
+        epilog="example: %(prog)s 5 4 TSJIT -t 5"
+    )
     parser.add_argument("rows", help="number of rows in the puzzle; example: 5", type=int)
     parser.add_argument("cols", help="number of columns in the puzzle; example: 4", type=int)
     parser.add_argument("pieces", help="pieces of the puzzle; sigils are I, O, T, J, L, S, Z; example: IOTLJ")
@@ -221,8 +226,12 @@ if __name__ == "__main__":
         solution = solve(board, pieces, timeout=args.timeout)
         duration = time.time() - start
         if duration > 2:
-            print("Solution:", int(duration), "seconds")
+            print("Duration:", int(duration), "seconds")
         else:
-            print("Solution:", int(duration * 1000), "ms")
-        print(solution)
-        displayBoard(solution)
+            print("Duration:", int(duration * 1000), "ms")
+        if solution is not None:
+            print("Displaying solution...")
+            #print(solution)
+            displayBoard(solution)
+        else:
+            print("No solution found.")
