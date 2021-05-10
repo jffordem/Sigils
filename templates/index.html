@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title>Sigils</title>
+    <style>
+        .A { background-color: red }
+        .B { background-color: green }
+        .C { background-color: blue }
+        .D { background-color: pink }
+        .E { background-color: purple }
+        .F { background-color: chartreuse }
+        .G { background-color: cyan }
+        .H { background-color: magenta }
+        .I { background-color: yellow }
+        .J { background-color: brown }
+        .K { background-color: coral }
+        .L { background-color: navy }
+        .M { background-color: orchid }
+    </style>
+  </head>
+  <body>
+    <h1>Sigils</h1>
+    <form action="{{ url_for('index') }}" method="POST">
+        <table>
+            <tr><td>Rows</td><td><input type="number" name="rows" value="{{puzzle.rows}}"></td></tr>
+            <tr><td>Cols</td><td><input type="number" name="cols" value="{{puzzle.cols}}"></td></tr>
+            <tr><td>Sigils</td><td><input type="text" name="sigils" value="{{puzzle.sigils}}"></td></tr>
+            <tr><td></td><td><input type="submit" value="Solve"></td></tr>
+        </table>
+    </form>
+    <h2>Solution</h2>
+    {% if puzzle %}
+    {% if puzzle.solution %}
+    <p>{{puzzle.message}}</p>
+    <table>
+        {% for row in puzzle.solution.rows() %}
+        <tr>
+            {% for col in row %}
+            <td class="{{col}}" style="width:1cm;height:1cm"></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No solution. {{puzzle.message}}</p>
+    {% endif %}
+    {% else %}
+    <p>No current puzzle</p>
+    {% endif %}
+  </body>
+</html>
