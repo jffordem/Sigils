@@ -10,19 +10,22 @@ def favicon():
 
 @app.route('/', methods=['GET','POST'])
 def index():
-    if all(key in request.form for key in 'rows cols sigils'.split()):
+    if all(key in request.form for key in 'rows cols sigils timeout'.split()):
         rows = int(request.form['rows'])
         cols = int(request.form['cols'])
         sigils = request.form['sigils']
+        timeout = int(request.form['timeout'])
     else:
         rows = 3
         cols = 4
         sigils = 'LJO'
-    solution, message = findSolution(rows, cols, sigils)
+        timeout = 20
+    solution, message = findSolution(rows, cols, sigils, timeout)
     puzzle = { 
         'rows': rows,
         'cols': cols,
         'sigils': sigils,
+        'timeout': timeout,
         'message': message,
         'solution': solution
     }

@@ -1,5 +1,13 @@
-<html>
-  <head>
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <title>Sigils</title>
     <style>
         .A { background-color: red }
@@ -18,33 +26,118 @@
     </style>
   </head>
   <body>
-    <h1>Sigils</h1>
-    <form action="{{ url_for('index') }}" method="POST">
-        <table>
-            <tr><td>Rows</td><td><input type="number" name="rows" value="{{puzzle.rows}}"></td></tr>
-            <tr><td>Cols</td><td><input type="number" name="cols" value="{{puzzle.cols}}"></td></tr>
-            <tr><td>Sigils</td><td><input type="text" name="sigils" value="{{puzzle.sigils}}"></td></tr>
-            <tr><td></td><td><input type="submit" value="Solve"></td></tr>
-        </table>
-    </form>
-    <h2>Solution</h2>
-    {% if puzzle %}
-    {% if puzzle.solution %}
-    <p>{{puzzle.message}}</p>
-    <table>
-        {% for row in puzzle.solution.rows() %}
-        <tr>
-            {% for col in row %}
-            <td class="{{col}}" style="width:1cm;height:1cm"></td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <p>No solution. {{puzzle.message}}</p>
-    {% endif %}
-    {% else %}
-    <p>No current puzzle</p>
-    {% endif %}
-  </body>
+    <div class="container">
+
+      <div class="row">
+          <section class="col-12">
+            <h1>Sigils</h1>
+            <form class="form-group" action="{{ url_for('index') }}" method="POST">
+              <div class="form-group row">
+                <label class="col-form-label text-right col-2" for="rows">Rows</label>
+                <div class="col-2">
+                  <input class="form-control" type="number" min="3" max="12" id="rows" name="rows" placeholder="rows" value="{{puzzle.rows}}" required autofocus>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-form-label text-right col-2" for="cols">Cols</label>
+                <div class="col-2">
+                  <input class="form-control" type="number" min="3" max="12" id="cols" name="cols" placeholder="cols" value="{{puzzle.cols}}" required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-form-label text-right col-2" for="sigils">Sigils</label>
+                <div class="col-2">
+                  <input class="form-control" data-toggle="tooltip" title="IOTJLSZR" type="text" if="sigils" name="sigils" placeholder="sigils" value="{{puzzle.sigils}}" required>
+                </div>
+                <small class="form-text text-muted mb-2" id="allSigils">Sigils: I, O, T, J, L, S, Z and R (random)</small>
+              </div>
+
+              <div class="form-group row">
+                <div class="offset-2 col-auto">
+                  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#advanced">Advanced</button>
+                </div>
+              </div>
+
+              <div class="collapse" id="advanced">
+                <div class="form-group row">
+                  <label class="col-form-label text-right col-2" for="timeout">Timeout</label>
+                  <div class="col-2">
+                    <div class="input-group">
+                      <input class="form-control" type="number" min="2" max="120" id="timeout" name="timeout" placeholder="timeout" value="{{puzzle.timeout}}" required>
+                      <div class="input-group-append">
+                        <div class="input-group-text">seconds</div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+              </div>
+              <div class="form-group row">
+                <div class="offset-2 col-auto">
+                  <!-- input class="btn btn-primary" data-toggle="popover" title="Calculating solution..." data-content="This can take up to a minute." type="submit" value="Solve" -->
+                  <button id="solve" class="btn btn-primary" type="submit">
+                    <span id="spinney" class="d-none"><!-- -->
+                      <span class="spinner-border spinner-border-sm text-light" role="status"></span>
+                    </span>
+                    Solve
+                    </button>
+                </div>
+              </div>
+            </form>
+            <h2>Solution</h2>
+            {% if puzzle %}
+            {% if puzzle.solution %}
+            <div class="alert alert-success alert-dismissible fade show">
+              <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <p>{{puzzle.message}}</p>
+            </div>
+            <table>
+                {% for row in puzzle.solution.rows() %}
+                <tr>
+                    {% for col in row %}
+                    <td class="{{col}}" style="width:15mm;height:15mm"></td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <div class="alert alert-danger alert-dismissible fade show">
+              <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <p>No solution. {{puzzle.message}}</p>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="alert alert-warn alert-dismissible fade show">
+              <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <p>No current puzzle</p>
+            </div>
+            {% endif %}
+          </section>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+      <script>
+        $(function() {
+          $('[data-toggle="tooltip"]').tooltip();
+        });
+        $(function() {
+          $('[data-toggle="popover"]').popover();
+        });
+        $(document).read(function() {
+          $("#solve").click(function() {
+            $('#spinney').removeClass('d-none');
+          });
+        });
+      </script>
+</body>
 </html>

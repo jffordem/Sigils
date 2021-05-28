@@ -1,11 +1,34 @@
-# sigils.py
-
 import random
 import numpy as np
 import time
 import argparse
 from tkinter import Tk, Label
 
+__doc__ = '''
+Solver for tetromino puzzles found in The Talos Principle.
+
+This can be run from the command line, or calling methods directly.
+
+## Command Line
+
+Usage
+
+$ sigils.py <rows> <cols> <sigils>
+
+Example
+
+$ sigils.py 3 4 JLO
+
+## API
+
+from sigils import findSolution, displayBoard
+
+solution, message = findSolution(3, 4, "JLO")
+print(message)
+if solution:
+    displayBoard(solution)
+
+'''
 
 class Sigil:
     def __init__(self, *patterns):
@@ -150,7 +173,7 @@ def findSolution(rows, cols, sigils, timeout=60):
     else:
         pieces = sorted(pieces, key=lambda piece: len(piece))
         start = time.time()
-        meta = {"count": 0, "bad": 0, "missing": 0, "start": start}
+        meta = {"count": 0, "bad": 0, "missing": 0, "start": start, "quiet": True}
         solution = solve(board, pieces, timeout=timeout, meta=meta)
         duration = time.time() - start
         if duration > 2:
