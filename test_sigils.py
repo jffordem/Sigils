@@ -1,7 +1,6 @@
 import unittest
 from sigils import *
 
-
 class TestSigls(unittest.TestCase):
 
     def testSigil(self):
