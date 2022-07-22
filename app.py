@@ -1,6 +1,16 @@
+__doc__ = '''
+Flask implementation of Sigil (tetromino) puzzle solver.  This is something that's used heavily in the game 
+The Talos Principle so I thought I'd whip up a solver rather than bang around in the puzzle interface.
+
+Usage:
+    set FLASK_APP=app.py
+    set FLASK_ENV=development
+    flask run
+'''
+
+import os
 from flask import Flask, render_template, request, send_from_directory
 from sigils import findSolution
-import os
 
 app = Flask(__name__)
 

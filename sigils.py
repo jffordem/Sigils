@@ -1,8 +1,8 @@
 import random
-import numpy as np
 import time
 import argparse
 from tkinter import Tk, Label
+import numpy as np
 
 __doc__ = '''
 Solver for tetromino puzzles found in The Talos Principle.
