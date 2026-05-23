@@ -181,10 +181,12 @@ def findSolution(rows, cols, sigils, timeout=60):
         else:
             return solution, message + "Duration: " + str(int(duration * 1000)) + " ms"
 
-def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "missing": 0, "start": time.time()}):
+def solve(board, pieces, timeout=60, ch=ord('A'), meta=None):
+    if meta is None:
+        meta = {"count": 0, "bad": 0, "missing": 0, "start": time.time()}
     islands = board.islands()
-    if len(pieces) == 0 and len(islands) == 0:
-        return board
+    if len(pieces) == 0:
+        return board if not islands else None
     elif meta["count"] > 100000000:
         if "quiet" not in meta:
             meta["quiet"] = True
@@ -230,7 +232,15 @@ def displayBoard(board):
             'J': 'brown',
             'K': 'coral',
             'L': 'navy',
-            'M': 'orchid'
+            'M': 'orchid',
+            'N': 'spring green',
+            'O': 'cornflower blue',
+            'P': 'hot pink',
+            'Q': 'chartreuse',
+            'R': 'dark orange',
+            'S': 'violet',
+            'T': 'deep sky blue',
+            'U': 'aquamarine',
         }
         if ch not in colors: 
             return 'dim gray'
