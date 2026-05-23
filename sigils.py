@@ -1,10 +1,4 @@
-import random
-import time
-import argparse
-from tkinter import Tk, Label
-import numpy as np
-
-__doc__ = '''
+'''
 Solver for tetromino puzzles found in The Talos Principle.
 
 This can be run from the command line, or calling methods directly.
@@ -29,6 +23,12 @@ if solution:
     displayBoard(solution)
 
 '''
+
+import random
+import time
+import argparse
+from tkinter import Tk, Label
+import numpy as np
 
 class Sigil:
     def __init__(self, *patterns):
@@ -109,7 +109,7 @@ class Board:
 
     def placePiece(self, shape, row, col, ch):
         rows, cols = self.size()
-        if any(r + row >= rows or c + col >= cols for r, c in shape):
+        if any(r + row < 0 or c + col < 0 or r + row >= rows or c + col >= cols for r, c in shape):
             return None
         if any(self.__array[r + row, c + col] != '.' for r, c in shape):
             return None
@@ -117,6 +117,14 @@ class Board:
         for r, c in shape:
             copy[r + row, c + col] = ch
         return Board(copy)
+
+    def first_empty(self):
+        rows, cols = self.size()
+        for row in range(rows):
+            for col in range(cols):
+                if self.__array[row, col] == '.':
+                    return (row, col)
+        return None
 
     def rows(self):
         rows, _ = self.size()
@@ -181,10 +189,12 @@ def findSolution(rows, cols, sigils, timeout=60):
         else:
             return solution, message + "Duration: " + str(int(duration * 1000)) + " ms"
 
-def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "missing": 0, "start": time.time()}):
+def solve(board, pieces, timeout=60, ch=ord('A'), meta=None):
+    if meta is None:
+        meta = {"count": 0, "bad": 0, "missing": 0, "start": time.time()}
     islands = board.islands()
-    if len(pieces) == 0 and len(islands) == 0:
-        return board
+    if len(pieces) == 0:
+        return board if not islands else None
     elif meta["count"] > 100000000:
         if "quiet" not in meta:
             meta["quiet"] = True
@@ -199,11 +209,19 @@ def solve(board, pieces, timeout=60, ch=ord('A'), meta={"count": 0, "bad": 0, "m
         meta["bad"] += 1
         return None
     else:
-        rows, cols = board.size()
-        piece, remaining = pieces[0], pieces[1:]
-        for shape in piece:
-            for row in range(rows):
-                for col in range(cols):
+        anchor = board.first_empty()
+        if anchor is None:
+            return None
+        anchor_row, anchor_col = anchor
+        seen = set()
+        for i, piece in enumerate(pieces):
+            if id(piece) in seen:
+                continue
+            seen.add(id(piece))
+            remaining = pieces[:i] + pieces[i + 1:]
+            for shape in piece:
+                for dr, dc in shape:
+                    row, col = anchor_row - dr, anchor_col - dc
                     meta["count"] += 1
                     if "quiet" not in meta and meta["count"] % 500000 == 0:
                         print(str(meta), str(board), sep='\n')
@@ -230,7 +248,15 @@ def displayBoard(board):
             'J': 'brown',
             'K': 'coral',
             'L': 'navy',
-            'M': 'orchid'
+            'M': 'orchid',
+            'N': 'spring green',
+            'O': 'cornflower blue',
+            'P': 'hot pink',
+            'Q': 'chartreuse',
+            'R': 'dark orange',
+            'S': 'violet',
+            'T': 'deep sky blue',
+            'U': 'aquamarine',
         }
         if ch not in colors: 
             return 'dim gray'

@@ -1,4 +1,4 @@
-__doc__ = '''
+'''
 Flask implementation of Sigil (tetromino) puzzle solver.  This is something that's used heavily in the game 
 The Talos Principle so I thought I'd whip up a solver rather than bang around in the puzzle interface.
 
