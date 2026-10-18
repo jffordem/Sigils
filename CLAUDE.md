@@ -8,11 +8,23 @@ Sigils is a Python solver for tetromino packing puzzles from *The Talos Principl
 
 ## Commands
 
-Dependencies are managed with [uv](https://docs.astral.sh/uv/): `pyproject.toml` declares them and `uv.lock` pins exact versions (CI installs with `uv sync --locked`). pytest and flake8 are in the `dev` dependency group, which `uv sync` installs by default.
+Dependencies are managed with [uv](https://docs.astral.sh/uv/): `pyproject.toml` declares them and `uv.lock` pins exact versions (CI installs with `uv sync --locked`). pytest, flake8 and invoke are in the `dev` dependency group, which `uv sync` installs by default.
 
 **Install dependencies:**
 ```
 uv sync
+```
+
+**Convenience tasks ([invoke](https://www.pyinvoke.org/), defined in [tasks.py](tasks.py)):**
+```
+uv run invoke --list                  # show all tasks
+uv run invoke start                   # Flask web app (localhost:5000)
+uv run invoke start-debug             # Flask with debugger and auto-reload
+uv run invoke gui                     # Tkinter GUI
+uv run invoke tui                     # Textual TUI
+uv run invoke test                    # pytest
+uv run invoke test -v -x -k Solve     # verbose, stop on first failure, filter by keyword
+uv run invoke lint                    # both flake8 passes (same as CI)
 ```
 
 **Run CLI solver:**
