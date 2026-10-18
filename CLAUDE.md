@@ -8,56 +8,56 @@ Sigils is a Python solver for tetromino packing puzzles from *The Talos Principl
 
 ## Commands
 
-Dependencies are managed with [Poetry](https://python-poetry.org/) via `pyproject.toml`.
+Dependencies are managed with [uv](https://docs.astral.sh/uv/): `pyproject.toml` declares them and `uv.lock` pins exact versions (CI installs with `uv sync --locked`). pytest and flake8 are in the `dev` dependency group, which `uv sync` installs by default.
 
 **Install dependencies:**
 ```
-poetry install
+uv sync
 ```
 
 **Run CLI solver:**
 ```
-poetry run python sigils.py <rows> <cols> <pieces> [-t timeout]
-poetry run python sigils.py 5 4 IOTLJ
+uv run python sigils.py <rows> <cols> <pieces> [-t timeout]
+uv run python sigils.py 5 4 IOTLJ
 ```
 
 **Run Tkinter GUI:**
 ```
-poetry run python wsigils.pyw
+uv run python wsigils.pyw
 ```
 
 **Run Textual TUI:**
 ```
-poetry run python tsigils.py
+uv run python tsigils.py
 ```
 
 **Run Flask web app:**
 ```
-poetry run flask --app app.py run
+uv run flask --app app.py run
 ```
 
 **Run tests:**
 ```
-poetry run pytest
+uv run pytest
 ```
 
 **Run a single test:**
 ```
-poetry run pytest test_sigils.py::TestSigls::testSolveJLO
+uv run pytest test_sigils.py::TestSigls::testSolveJLO
 ```
 
 **Lint:**
 ```
-poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 ```
 Max line length is 127 characters.
 
 **Add/remove dependencies:**
 ```
-poetry add <package>
-poetry add --group dev <package>
-poetry remove <package>
+uv add <package>
+uv add --dev <package>
+uv remove <package>
 ```
 
 ## Architecture

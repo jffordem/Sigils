@@ -1,0 +1,3 @@
+[flake8]
+# uv keeps the virtualenv in the project directory; don't lint installed packages.
+extend-exclude = .venv

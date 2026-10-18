@@ -2,7 +2,7 @@
 Textual TUI for the Sigils tetromino puzzle solver.
 
 Usage:
-    poetry run python tsigils.py
+    uv run python tsigils.py
 """
 
 from textual.app import App, ComposeResult
