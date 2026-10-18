@@ -21,8 +21,10 @@ uv run invoke --list                  # show all tasks
 uv run invoke start                   # Flask web app (localhost:5000)
 uv run invoke start-debug             # Flask with debugger and auto-reload
 uv run invoke gui                     # Tkinter GUI
+uv run invoke tui                     # Textual TUI
 uv run invoke test                    # pytest
 uv run invoke test -v -x -k Solve     # verbose, stop on first failure, filter by keyword
+uv run invoke lint                    # both flake8 passes (same as CI)
 ```
 
 **Run CLI solver:**
